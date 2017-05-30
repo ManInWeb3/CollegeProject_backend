@@ -1,6 +1,8 @@
 from django.db import models
-import hashlib
+# import hashlib
 from random import randint
+from django.utils import timezone
+
 # Create your models here.
 
 
@@ -27,18 +29,22 @@ class Test(models.Model):
     student = models.ForeignKey(Student, on_delete = models.PROTECT)
     topic   = models.TextField()
 #    pin_code = models.CharField(max_length = 32, editable = False)
-    pin_code = models.IntegerField(max_length=10,editable = False,default=0)  #Default 30 min
+    pin_code = models.IntegerField(editable = False,default=0)  #Default 30 min
     duration = models.IntegerField(default=1800)  #Default 30 min
     date_created = models.DateTimeField('date created', auto_now_add=True, editable = False)
 #    isactive = models.BooleanField(default = False)
-    active_from = models.DateField('active from', null=True, blank=True)
-    active_till = models.DateField('active till', null=True, blank=True)
+    active_from = models.DateField('active from')
+    active_till = models.DateField('active till')
     date_passed = models.DateTimeField('date passed', null=True, blank=True, editable = False)
+
+    def isactive(self):
+        # print(timezone.now().date())
+        return self.active_from <= timezone.now().date() and timezone.now().date() <= self.active_till and self.date_passed == None
 
     def save(self, *args, **kwargs):
         if( self.pin_code == 0 ):
             while True:
-                npin = str(randint(1000000000,9999999999)).encode('utf-8')
+                npin = randint(100000000,999999999)
                 #Check that the NUMBER is not already used as PIN
                 try:
                     curtest = Test.objects.get(pin_code=npin)

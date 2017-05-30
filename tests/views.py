@@ -77,10 +77,11 @@ def TestLogDetailViewByPIN(request,pin):
     Detail views for TestLog by Test PIN
     only GET by ID and POST are available
     """
+    # print( int(pin) )
     try:
-        curtest = Test.objects.get(pin_code=pin)
+        curtest = Test.objects.get(pin_code=int(pin) )
     except Test.DoesNotExist:
-        return JsonResponse({"status": "error", "message": "Such Test doesn't exist."}, status=404)
+        return JsonResponse({"status": "error", "message": "Such Test doesn't exist. PIN: "+pin}, status=404)
 
     print(request.method +" = "+ pin)
 #GET get list of all avilable testlogs
@@ -91,22 +92,21 @@ def TestLogDetailViewByPIN(request,pin):
 
 # POST add new testlog
     elif request.method == 'POST':
-        text = request.POST.get('text')
-        photo = request.FILES['photo']
-        fs = FileSystemStorage(location=settings.MEDIA_ROOT)
-        photo_url = fs.url(fs.save(photo.name, photo))
-        screenshot = request.FILES['screenshot']
-        screenshot_url = fs.url(fs.save(screenshot.name, screenshot))
-
         testcur = Test.objects.get(pin_code = pin)
-#        if testcur.isactive and testcur.active_from < timezone.now().date() and timezone.now().date() < testcur.active_till:
-        if testcur.active_from < timezone.now().date() and timezone.now().date() < testcur.active_till:
+        if testcur.isactive():
+            text = request.POST.get('text')
+            photo = request.FILES['photo']
+            fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+            photo_url = fs.url(fs.save(photo.name, photo))
+            screenshot = request.FILES['screenshot']
+            screenshot_url = fs.url(fs.save(screenshot.name, screenshot))
+
             testlogcur = TestLog(text = text, test = testcur, datetime = timezone.now(), photo = photo_url, screenshot = screenshot_url)
             testlogcur.save()
             return JsonResponse({"status": "ok", "message": "TestLog successfully added."})
 
         else:
-            return JsonResponse({"status": "error", "message": "Thus test is not active or wrong date."}, status=499)
+            return JsonResponse({"status": "error", "message": "Test is not active or wrong date."}, status=499)
 
     else:
         return JsonResponse({"status": "error", "message": "Permission to this method is denied"}, status=499)

@@ -99,7 +99,8 @@ def TestLogDetailViewByPIN(request,pin):
         screenshot_url = fs.url(fs.save(screenshot.name, screenshot))
 
         testcur = Test.objects.get(pin_code = pin)
-        if testcur.isactive and testcur.active_from < timezone.now().date() and timezone.now().date() < testcur.active_till:
+#        if testcur.isactive and testcur.active_from < timezone.now().date() and timezone.now().date() < testcur.active_till:
+        if testcur.active_from < timezone.now().date() and timezone.now().date() < testcur.active_till:
             testlogcur = TestLog(text = text, test = testcur, datetime = timezone.now(), photo = photo_url, screenshot = screenshot_url)
             testlogcur.save()
             return JsonResponse({"status": "ok", "message": "TestLog successfully added."})

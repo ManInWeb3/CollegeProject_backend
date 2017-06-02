@@ -1,0 +1,8 @@
+<h1>Tests</h1>
+<ul>
+{% for test in object_list %}
+    <li><a href="{% url 'tests:test-update' test.id %}">{{ test.pin_code }}</a></li>
+{% empty %}
+    <li>No students yet.</li>
+{% endfor %}
+</ul>

@@ -2,11 +2,8 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import TestSerializer, TestLogSerializer
-from .models import Test, TestLog
 
 from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 
@@ -17,8 +14,19 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.http import Http404
+
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
 from django.views import generic
+from django.urls import reverse_lazy
+
+from .serializers import TestSerializer, TestLogSerializer
+from .models import Student, Test, TestLog
+
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.list import ListView
 
 @csrf_exempt
 def TestListView(request):
@@ -124,11 +132,55 @@ def TestTimeLineByPIN(request,pin):
 
     return render(request, 'testlogs/timeline.html', {'test': curtest,'testlog': curtestlog})
 
-class IndexView(generic.ListView):
-    template_name = 'tests/index.html'
-    context_object_name = 'tests_list'
+@method_decorator(login_required, name='dispatch')
+class TestListView(ListView):
+    model = Test
+    fields = ['pin_code','topic','active_from','active_till','date_passed', 'student']
 
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Test.objects.all() #filter()
+@method_decorator(login_required, name='dispatch')
+class TestUpdate(UpdateView):
+    model = Test
+    fields = ['topic','active_from','active_till', 'student']
 
+@method_decorator(login_required, name='dispatch')
+class TestCreate(CreateView):
+    model = Test
+    fields = ['topic','active_from','active_till', 'student']
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super(TestCreate, self).form_valid(form)
+
+
+@method_decorator(login_required, name='dispatch')
+class TestDelete(DeleteView):
+    '''
+    Need to check is it an empty test???
+    we cannot delete a test if there are any TestLogs
+
+    '''
+
+    model = Test
+    fields = ['topic','active_from','active_till', 'student']
+
+
+
+@method_decorator(login_required, name='dispatch')
+class StudentListView(ListView):
+    model = Student
+    fields = ['first_name','last_name','email','skype']
+
+@method_decorator(login_required, name='dispatch')
+class StudentUpdate(UpdateView):
+    model = Student
+    fields = ['first_name','last_name','email','skype']
+
+@method_decorator(login_required, name='dispatch')
+class StudentCreate(CreateView):
+    model = Student
+    fields = ['first_name','last_name','email','skype']
+
+@method_decorator(login_required, name='dispatch')
+class StudentDelete(DeleteView):
+    model = Student
+    fields = ['first_name','last_name','email','skype']

@@ -1,27 +1,25 @@
 from django.conf.urls import url, include
 #from rest_framework import routers
 from . import views
-
-#router = routers.DefaultRouter()
-#router.register(r'ivr', views.IvrList)
-#router.register(r'ivrmenu', views.IvrMenuViewSet)
-
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
-#urlpatterns = [
-#    url(r'^', include(router.urls)),
-#    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-#]
+from tests.views import StudentListView, StudentCreate, StudentUpdate, StudentDelete
+from tests.views import TestListView, TestUpdate, TestCreate, TestDelete
 
 app_name = 'tests'
 urlpatterns = [
-#    url(r'^testlog/$', views.TestLogListView),
-#    url(r'^ivr/(?P<pk>[0-9]+)/$', views.IvrDetailView),
-    url(r'^timelinebypin/(?P<pin>[0-9]+)/$', views.TestTimeLineByPIN, name = 'testlogbypin'),
-    url(r'^$', views.IndexView.as_view(), name='index'),
-    url(r'^test/$', views.TestListView),
-    url(r'^test/(?P<pin>[0-9]+)/$', views.TestDetailView),
+
+    # url(r'^$', views.IndexView.as_view(), name='index'),
     url(r'^testlog/$', views.TestLogListView),
     url(r'^testlog/(?P<pk>[0-9]+)/$', views.TestLogDetailView),
     url(r'^testlog/bypin/(?P<pin>[0-9]+)/$', views.TestLogDetailViewByPIN),
+    url(r'^timelinebypin/(?P<pin>[0-9]+)/$', views.TestTimeLineByPIN, name = 'testlogbypin'),
+
+    url(r'^test/$', TestListView.as_view(), name='test-list'),
+    url(r'^test/(?P<pk>[0-9]+)/$', TestUpdate.as_view(), name='test-update'),
+    url(r'^test/add/$', TestCreate.as_view(), name='test-add'),
+    url(r'^test/(?P<pk>[0-9]+)/delete/$', TestDelete.as_view(), name='test-delete'),    
+
+    url(r'^student/$', StudentListView.as_view(), name='student-list'),
+    url(r'^student/(?P<pk>[0-9]+)/$', StudentUpdate.as_view(), name='student-update'),
+    url(r'^student/add/$', StudentCreate.as_view(), name='student-add'),
+    url(r'^student/(?P<pk>[0-9]+)/delete/$', StudentDelete.as_view(), name='student-delete'),    
 ]

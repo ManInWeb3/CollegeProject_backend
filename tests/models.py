@@ -2,11 +2,14 @@ from django.db import models
 # import hashlib
 from random import randint
 from django.utils import timezone
+from django.urls import reverse
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 
 class Student(models.Model):
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT, default = 3)  
     first_name = models.CharField(max_length = 100)
     last_name = models.CharField(max_length = 100)
     email = models.CharField(max_length = 100)
@@ -15,17 +18,21 @@ class Student(models.Model):
     def __str__(self):
         return self.first_name + " " + self.last_name
 
-class Teacher(models.Model):
-    first_name = models.CharField(max_length = 100)
-    last_name = models.CharField(max_length = 100)
-    email = models.CharField(max_length = 100)
-    skype = models.CharField(max_length = 50)
+    def get_absolute_url(self):
+        return reverse('tests:student-list', kwargs={})        
 
-    def __str__(self):
-        return self.first_name + " " + self.last_name
+# class Teacher(models.Model):
+#     first_name = models.CharField(max_length = 100)
+#     last_name = models.CharField(max_length = 100)
+#     email = models.CharField(max_length = 100)
+#     skype = models.CharField(max_length = 50)
+
+#     def __str__(self):
+#         return self.first_name + " " + self.last_name
 
 class Test(models.Model):
-    teacher = models.ForeignKey(Teacher, on_delete = models.PROTECT)
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT, default = 3)  
+    # teacher = models.ForeignKey(Teacher, on_delete = models.PROTECT)
     student = models.ForeignKey(Student, on_delete = models.PROTECT)
     topic   = models.TextField()
 #    pin_code = models.CharField(max_length = 32, editable = False)
@@ -55,7 +62,8 @@ class Test(models.Model):
 
     def __str__(self):
         return self.teacher.first_name +" "+  self.teacher.last_name + " - " + self.student.first_name + " " +self.student.last_name
-
+    def get_absolute_url(self):
+        return reverse('tests:test-list', kwargs={})
 
 class TestLog(models.Model):
     datetime = models.DateTimeField(auto_now_add=True, blank=True, editable = False)

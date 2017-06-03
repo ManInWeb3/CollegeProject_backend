@@ -159,10 +159,8 @@ class TestDelete(DeleteView):
     we cannot delete a test if there are any TestLogs
 
     '''
-
     model = Test
-    fields = ['topic','active_from','active_till', 'student']
-
+    success_url = reverse_lazy('tests:test-list')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -183,4 +181,4 @@ class StudentCreate(CreateView):
 @method_decorator(login_required, name='dispatch')
 class StudentDelete(DeleteView):
     model = Student
-    fields = ['first_name','last_name','email','skype']
+    success_url = reverse_lazy('tests:student-list')

@@ -1,7 +1,7 @@
 <h1>Students</h1>
 <ul>
 {% for student in object_list %}
-    <li>{{ student.id }} # {{ student.first_name }} - {{ student.last_name }}</li>
+    <li><a href="{% url 'tests:student-update' student.id %}">{{ student.first_name }} {{ student.last_name }}</a></li>
 {% empty %}
     <li>No students yet.</li>
 {% endfor %}

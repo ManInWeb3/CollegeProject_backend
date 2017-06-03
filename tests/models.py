@@ -21,15 +21,6 @@ class Student(models.Model):
     def get_absolute_url(self):
         return reverse('tests:student-list', kwargs={})        
 
-# class Teacher(models.Model):
-#     first_name = models.CharField(max_length = 100)
-#     last_name = models.CharField(max_length = 100)
-#     email = models.CharField(max_length = 100)
-#     skype = models.CharField(max_length = 50)
-
-#     def __str__(self):
-#         return self.first_name + " " + self.last_name
-
 class Test(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, default = 3)  
     # teacher = models.ForeignKey(Teacher, on_delete = models.PROTECT)
@@ -61,7 +52,7 @@ class Test(models.Model):
         super(Test, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.teacher.first_name +" "+  self.teacher.last_name + " - " + self.student.first_name + " " +self.student.last_name
+        return self.student.first_name + " " +self.student.last_name + " - " +self.topic
     def get_absolute_url(self):
         return reverse('tests:test-list', kwargs={})
 

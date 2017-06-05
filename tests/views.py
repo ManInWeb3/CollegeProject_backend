@@ -137,6 +137,10 @@ def TestTimeLineByPIN(request,pin):
 class TestListView(ListView):
     model = Test
     fields = ['pin_code','topic','active_from','active_till','date_passed', 'student']
+ 
+    def get_queryset(self):
+        return Test.objects.filter(created_by = self.request.user)
+    
 
 @method_decorator(login_required, name='dispatch')
 class TestUpdate(UpdateView):

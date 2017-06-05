@@ -10,8 +10,8 @@ urlpatterns = [
     # url(r'^$', views.IndexView.as_view(), name='index'),
     url(r'^testlog/$', views.TestLogListView),
     url(r'^testlog/(?P<pk>[0-9]+)/$', views.TestLogDetailView),
-    url(r'^testlog/bypin/(?P<pin>[0-9]+)/$', views.TestLogDetailViewByPIN),
-    url(r'^timelinebypin/(?P<pin>[0-9]+)/$', views.TestTimeLineByPIN, name = 'testlogbypin'),
+    url(r'^testlog/bypin/(?P<pin>[0-9]+)/$', views.TestTimeLineByPIN, name = 'testlogbypin'),
+    # url(r'^timelinebypin/(?P<pin>[0-9]+)/$', views.TestTimeLineByPIN, name = 'testlogbypin'),
 
     url(r'^test/$', TestListView.as_view(), name='test-list'),
     url(r'^test/(?P<pk>[0-9]+)/$', TestUpdate.as_view(), name='test-update'),

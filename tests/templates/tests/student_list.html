@@ -1,8 +1,46 @@
-<h1>Students</h1>
-<ul>
+{% extends 'tests/base.html' %}
+
+{% block content %}
+
+
+<a href="./add" class="btn btn-primary" role="button">Add student</a>
+
+<div class="container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>email</th>
+        <th>skype</th>
+        <th>student's tests</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
 {% for student in object_list %}
-    <li><a href="{% url 'tests:student-update' student.id %}">{{ student.first_name }} {{ student.last_name }}</a></li>
+      <tr>
+        <td>
+       		<a href="{% url 'tests:student-update' student.id %}" target="_blank">{{ student }}</a>
+        </td>
+        <td>{{ student.email }}</td>
+        <td>{{ student.skype }}</td>
+        <td>{{ student.test_set.all|length }}</td>
+        <td>{% if  student.test_set.all|length == 0 %}	
+        		<a href="{% url 'tests:student-delete' student.id %}" class="glyphicon glyphicon-remove" style="color:red"></a>
+        	{% endif %}
+        </td>
+
+      </tr>      
+
 {% empty %}
-    <li>No students yet.</li>
+<tr>
+    <td colspan="4">No students yet.</td>
+</tr>    
 {% endfor %}
-</ul>
+    </tbody>
+
+  </table>
+</div>
+
+
+{% endblock %}

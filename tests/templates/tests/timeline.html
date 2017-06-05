@@ -1,0 +1,38 @@
+{% extends 'tests/base.html' %}
+{% block content %}
+
+<h1 class="text-center"> TimeLine of test with PIN {{ test.pin_code }}</h1>
+<b> Test's topic:</b>
+<pre> {{test.topic}}</pre>
+    <div class="col-lg-12">
+        <div class="table-responsive">
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+
+{% if testlog.all.count > 0 %}
+
+
+<table class="table">
+    {% for ctestlog in testlog.all %}
+
+  <tr>
+    <td width="*" rowspan="2">{{ ctestlog.datetime }}></td>
+    <td width="30%"><img src="{{ ctestlog.screenshot }}" alt="Smiley face" width="100%"></td>
+    <td width="30%"><img src="{{ ctestlog.photo }}" alt="Smiley face" width="100%"></td>
+  </tr>
+  <tr>
+    <td colspan="2"><textarea style="width:100%;resize:none;" rows="10" readonly>{{ctestlog.text}}</textarea></td>
+  </tr>
+
+
+    {% endfor %}
+
+</table>
+
+{% else %}
+    This Test doesn't have any logs.
+{% endif %}
+
+
+{% endblock %}
+

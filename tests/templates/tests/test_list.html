@@ -1,8 +1,60 @@
-<h1>Tests</h1>
-<ul>
+{% extends 'tests/base.html' %}
+
+{% block content %}
+
+<a href="./add" class="btn btn-primary" role="button">Add test</a>
+<div class="container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Test PIN</th>
+        <th>Student</th>
+        <th>Test topic</th>
+        <th>Active dates</th>
+        <th>Passed date</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+
 {% for test in object_list %}
-    <li><a href="{% url 'tests:test-update' test.id %}">{{ test.pin_code }}</a></li>
+      <tr>
+        <td>
+        	{% if test.testlog_set.all|length == 0 %}	
+        		<a href="{% url 'tests:test-update' test.id %}" target="_blank">{{ test.pin_code }}</a>
+        	{% else %}
+        		{{ test.pin_code }}
+        	{% endif%}
+
+        </td>
+        <td><a href="{% url 'tests:student-update' test.student.id %}" target="_blank">{{ test.student }}</a></td>
+        <td>{{ test.topic }}</td>
+        <td>{{ test.active_from|date:"d.m" }} - {{ test.active_till|date:"d.m" }}</td>
+        <td><a href="{% url 'tests:testlogbypin' test.pin_code %}" target="_blank">
+        	{% if test.date_passed %}
+        		{{ test.date_passed|date:"d.m.y" }}
+        	{% else %}
+        		Not passed
+        	{% endif %}
+        	({{ test.testlog_set.all|length }})</a>
+        </td>
+        <td>{% if test.testlog_set.all|length == 0 %}	
+        		<a href="{% url 'tests:test-delete' test.id %}" class="glyphicon glyphicon-remove" style="color:red" title="{{ test.testlog_set.all|length }} test logs"></a>
+        	{% endif %}
+        	
+        </td>
+
+      </tr>      
+
 {% empty %}
-    <li>No students yet.</li>
+<tr>
+    <td colspan="5">No tests yet.</td>
+</tr>    
 {% endfor %}
-</ul>
+    </tbody>
+
+  </table>
+</div>
+
+
+{% endblock %}

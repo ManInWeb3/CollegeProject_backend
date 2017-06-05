@@ -122,6 +122,7 @@ def TestLogDetailViewByPIN(request,pin):
 
 #@csrf_exempt
 @login_required
+# @method_decorator(login_required, name='dispatch')
 def TestTimeLineByPIN(request,pin):
     """
     TimeLine views for TestLog by Test PIN
@@ -130,7 +131,7 @@ def TestTimeLineByPIN(request,pin):
     curtest = get_object_or_404(Test, pin_code = pin)
     curtestlog = TestLog.objects.filter(test = curtest)
 
-    return render(request, 'testlogs/timeline.html', {'test': curtest,'testlog': curtestlog})
+    return render(request, 'tests/timeline.html', {'test': curtest,'testlog': curtestlog})
 
 @method_decorator(login_required, name='dispatch')
 class TestListView(ListView):

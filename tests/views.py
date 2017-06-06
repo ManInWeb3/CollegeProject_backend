@@ -29,7 +29,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
 @csrf_exempt
-def TestListView(request):
+def apiTestListView(request):
     """
     List Test.
     """
@@ -39,7 +39,7 @@ def TestListView(request):
         return JsonResponse(serializer.data, safe=False)
 
 @csrf_exempt
-def TestDetailView(request,pin):
+def apiTestDetailView(request,pin):
     """
     Detail views for Test
     only GET by PIN code is available

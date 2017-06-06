@@ -19,6 +19,8 @@ urlpatterns = [
 
     # url(r'^timelinebypin/(?P<pin>[0-9]+)/$', views.TestTimeLineByPIN, name = 'testlogbypin'),
 
+    url(r'^api/v1/test/$', views.apiTestListView, name = 'apitestlist'),
+    url(r'^api/v1/test/bypin/(?P<pin>[0-9]+)/$', views.apiTestDetailView, name = 'apitestdetailbypin'),
     url(r'^test/$', TestListView.as_view(), name='test-list'),
     url(r'^test/(?P<pk>[0-9]+)/$', TestUpdate.as_view(), name='test-update'),
     url(r'^test/add/$', TestCreate.as_view(), name='test-add'),

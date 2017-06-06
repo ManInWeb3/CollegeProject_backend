@@ -12,7 +12,7 @@ build/
 develop-eggs/
 dist/
 downloads/
-media/
+tests/static/media/
 eggs/
 .eggs/
 lib/

@@ -57,11 +57,11 @@ class Test(models.Model):
         return reverse('tests:test-list', kwargs={})
 
 class TestLog(models.Model):
-    datetime = models.DateTimeField(auto_now_add=True, blank=True, editable = False)
-    text = models.TextField(blank=True,null=True)
-    test = models.ForeignKey(Test, on_delete = models.PROTECT, editable = False)
-    screenshot = models.ImageField(upload_to='media/', editable = False, blank=True, null=True)
-    photo = models.ImageField(upload_to='media/', editable = False)
+    test    = models.ForeignKey(Test, on_delete = models.PROTECT, editable = False)
+    datetime= models.DateTimeField(auto_now_add=True, blank=True, editable = False)
+    text    = models.TextField(blank=True,null=True)
+    screenshot = models.ImageField(editable = False,blank=True, null=True)
+    photo   = models.ImageField(editable = False)
 
 
 

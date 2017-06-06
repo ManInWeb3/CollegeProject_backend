@@ -26,13 +26,13 @@ from django.contrib.auth import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 #    url(r'^api/', include('tests.urls',namespace = "tests")),
-    url(r'^api/v1/', include('tests.urls', namespace='testsapi')),
-    url(r'^tests/', include('tests.urls', namespace='testswww')),
+    # url(r'^api/v1/', include('tests.urls', namespace='testsapi')),
+    # url(r'^tests/', include('tests.urls', namespace='testswww')),
+    url(r'^', include('tests.urls', namespace='testsapp')),
     url(r'^login/$', views.login, name='login'), #, kwargs={'next': '/tests/'}),
     url(r'^logout/$', views.logout, name='logout', kwargs={'next_page': '/login/'}),
-#    url(r'^media/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.MEDIA_ROOT}),
-#    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#urlpatterns += static('tests/static/media/', document_root=settings.MEDIA_ROOT)
 
 

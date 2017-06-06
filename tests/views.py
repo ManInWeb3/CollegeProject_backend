@@ -92,13 +92,13 @@ def TestLogDetailViewByPIN(request,pin):
         return JsonResponse({"status": "error", "message": "Such Test doesn't exist. PIN: "+pin}, status=404)
 
     print(request.method +" = "+ pin)
-#GET get list of all avilable testlogs
+# GET get list of all avilable testlogs by the pin
     if request.method == 'GET':
         testlog = TestLog.objects.filter(test = curtest)
         serializer = TestLogSerializer(testlog, many = True)
         return JsonResponse(serializer.data, safe=False)
 
-# POST add new testlog
+# POST add new testlog to test with the pin
     elif request.method == 'POST':
         testcur = Test.objects.get(pin_code = pin)
         if testcur.isactive():
@@ -122,7 +122,6 @@ def TestLogDetailViewByPIN(request,pin):
 
 #@csrf_exempt
 @login_required
-# @method_decorator(login_required, name='dispatch')
 def TestTimeLineByPIN(request,pin):
     """
     TimeLine views for TestLog by Test PIN

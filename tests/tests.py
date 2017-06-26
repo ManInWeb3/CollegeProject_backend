@@ -22,7 +22,7 @@ class TestTests(TestCase):
     Test the endpoint with incorrect name
     expected result 404 - don't have such page
     """
-    def test_gettestlist(self): #404
+    def test_get_wrongendpoint(self): #404
         r = requests.get("http://127.0.0.1/api/v1/testssdsf/")
         self.assertEqual(r.status_code, 404)
 
@@ -34,7 +34,7 @@ class TestTests(TestCase):
     expected result number of testlogs == 0
 
     """
-    def test_gettestlogslist_PINinDB(self): #200
+    def test_gettestlogslist_PINinDB_empty(self): #200
         r = requests.get("http://127.0.0.1/api/v1/testlog/bypin/135126531/")
         self.assertEqual(len(json.loads(r.text)) == 0, True)
 
@@ -44,7 +44,7 @@ class TestTests(TestCase):
     expected result number of testlogs> 0
 
     """
-    def test_gettestlogslist_PINinDB(self): #200
+    def test_gettestlogslist_PINinDB_notempty(self): #200
         r = requests.get("http://127.0.0.1/api/v1/testlog/bypin/147483647/")
         self.assertEqual(len(json.loads(r.text))>0, True)
 

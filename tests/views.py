@@ -36,6 +36,8 @@ def apiTestListView(request):
     if request.method == 'GET':
         testset = Test.objects.all()
         serializer = TestSerializer(testset, many=True)
+#        print(serializer.data.student)
+#        serializer.data.student
         return JsonResponse(serializer.data, safe=False)
 
 @csrf_exempt

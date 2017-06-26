@@ -11,15 +11,27 @@ class TestLogSerializer(serializers.ModelSerializer):
     # screenshot = serializers.ImageField(required=False,allow_empty_file=True,)
     # photo = serializers.ImageField(required=False,allow_empty_file=True,)
     # text =  serializers.CharField(required=False,)
+    datetime = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+
     class Meta:
         model = TestLog
-        fields = '__all__'
-       # fields = ('id', 'screenshot', 'photo', 'datetime', 'text', 'test_id')
+#        fields = '__all__'
+        exclude = ('id', 'test')
 
 class TestSerializer(serializers.ModelSerializer):
     """
     Serializing Test table
     """
+    student = serializers.SlugRelatedField(
+        many=False,
+        read_only=True,
+        slug_field='first_name'
+     )
+
     class Meta:
         model = Test
-        fields = '__all__'
+#        fields = '__all__'
+        fields = ('student', 'topic', 'pin_code', 'duration', 'active_from', 'active_till', 'date_passed')
+
+
+

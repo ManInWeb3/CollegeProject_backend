@@ -36,7 +36,7 @@ class TestTests(TestCase):
     """
     def test_gettestlogslist_PINinDB_empty(self): #200
         r = requests.get("http://127.0.0.1/api/v1/testlog/bypin/135126531/")
-        self.assertEqual(len(json.loads(r.text)) == 0, True)
+        self.assertEqual(len(json.loads(r.text)) == 0 and r.status_code == 200, True)
 
     """
     Test the endpoint GET list of testlogs by PIN
@@ -46,7 +46,7 @@ class TestTests(TestCase):
     """
     def test_gettestlogslist_PINinDB_notempty(self): #200
         r = requests.get("http://127.0.0.1/api/v1/testlog/bypin/147483647/")
-        self.assertEqual(len(json.loads(r.text))>0, True)
+        self.assertEqual(len(json.loads(r.text))>0 and r.status_code == 200, True)
 
     """
     Test the endpoint GET list of testlogsby PIN

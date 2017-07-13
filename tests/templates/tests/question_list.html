@@ -1,0 +1,48 @@
+{% extends 'tests/base.html' %}
+
+{% block content %}
+
+
+<a href="./add" class="btn btn-primary" role="button">Add question</a>
+
+<div class="container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>type</th>
+        <th>recomended duration</th>
+        <th>tests with the question</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+{% for question in object_list %}
+      <tr>
+        <td>
+       		<a href="{% url 'tests:question-update' question.id %}" target="_blank">{{ question }}</a>
+        </td>
+        <td>{{ question.question_type }}</td>
+        <td>{{ question.rec_duration }}</td>
+        <td>{{ question.test_set.all|length }}</td>
+        <td>{% if  question.test_set.all|length == 0 %}	
+        		<a href="{% url 'tests:question-delete' question.id %}" class="glyphicon glyphicon-remove" style="color:red"></a>
+            {% else %}
+        		<a class="glyphicon glyphicon-remove" style="color:grey" title="Cannot be removed"></a>
+        	{% endif %}
+        </td>
+
+      </tr>      
+
+{% empty %}
+<tr>
+    <td colspan="4">No items yet.</td>
+</tr>    
+{% endfor %}
+    </tbody>
+
+  </table>
+</div>
+
+
+{% endblock %}

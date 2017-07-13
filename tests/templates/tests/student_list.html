@@ -27,6 +27,8 @@
         <td>{{ student.test_set.all|length }}</td>
         <td>{% if  student.test_set.all|length == 0 %}	
         		<a href="{% url 'tests:student-delete' student.id %}" class="glyphicon glyphicon-remove" style="color:red"></a>
+        	{% else %}
+        		<a class="glyphicon glyphicon-remove" style="color:grey" title="Cannot remove"></a>
         	{% endif %}
         </td>
 

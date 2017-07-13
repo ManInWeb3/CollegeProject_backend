@@ -23,10 +23,11 @@ from django.views import generic
 from django.urls import reverse_lazy
 
 from .serializers import TestSerializer, TestLogSerializer
-from .models import Student, Test, TestLog
+from .models import Student, Test, TestLog, Question
 
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
+# ================= API ======================
 
 @csrf_exempt
 def apiTestListView(request):
@@ -121,7 +122,7 @@ def TestLogDetailViewByPIN(request,pin):
     else:
         return JsonResponse({"status": "error", "message": "Permission to this method is denied"}, status=499)
 
-
+# ===================== TestLogs ======================
 #@csrf_exempt
 @login_required
 def TestTimeLineByPIN(request,pin):
@@ -142,16 +143,16 @@ class TestListView(ListView):
     def get_queryset(self):
         return Test.objects.filter(created_by = self.request.user)
     
-
+#============= CRUD Test ==========================
 @method_decorator(login_required, name='dispatch')
 class TestUpdate(UpdateView):
     model = Test
-    fields = ['topic','active_from','active_till', 'student']
+    fields = ['question','active_from','active_till', 'duration', 'student']
 
 @method_decorator(login_required, name='dispatch')
 class TestCreate(CreateView):
     model = Test
-    fields = ['topic','active_from','active_till', 'student']
+    fields = ['question','active_from','active_till', 'duration', 'student']
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -168,6 +169,7 @@ class TestDelete(DeleteView):
     model = Test
     success_url = reverse_lazy('tests:test-list')
 
+#============== CRUD Student ====================
 
 @method_decorator(login_required, name='dispatch')
 class StudentListView(ListView):
@@ -188,3 +190,26 @@ class StudentCreate(CreateView):
 class StudentDelete(DeleteView):
     model = Student
     success_url = reverse_lazy('tests:student-list')
+
+
+#============= CRUD Question ==========================
+
+@method_decorator(login_required, name='dispatch')
+class QuestionListView(ListView):
+    model = Question
+    fields = ['question_text','question_type','rec_duration']
+
+@method_decorator(login_required, name='dispatch')
+class QuestionUpdate(UpdateView):
+    model = Question
+    fields = ['question_text','question_type','rec_duration']
+
+@method_decorator(login_required, name='dispatch')
+class QuestionCreate(CreateView):
+    model = Question
+    fields = ['question_text','question_type','rec_duration']
+
+@method_decorator(login_required, name='dispatch')
+class QuestionDelete(DeleteView):
+    model = Question
+    success_url = reverse_lazy('tests:question-list')

@@ -19,7 +19,8 @@
         {% if user.is_authenticated %}
             <li><a href="{% url 'tests:test-list' %}" class="top-menu">Tests</a></li>
             <li><a href="{% url 'tests:student-list' %}" class="top-menu">Students</a></li>
-            <li><a href="{% url 'logout' %}" class="top-menu">Logout</a></li>
+            <li><a href="{% url 'tests:question-list' %}" class="top-menu">Questions</a></li>
+            <li><a href="{% url 'logout' %}" class="top-menu">Logout ({{ user.username }})</a></li>
         {% else %}
             <li><a href="{% url 'login' %}" class="top-menu">Login</a></li>
         {% endif %}

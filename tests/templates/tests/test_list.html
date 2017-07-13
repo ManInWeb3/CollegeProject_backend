@@ -9,7 +9,7 @@
       <tr>
         <th>Test PIN</th>
         <th>Student</th>
-        <th>Test topic</th>
+        <th>Test question</th>
         <th>Active dates</th>
         <th>Passed date</th>
         <th></th>
@@ -28,7 +28,7 @@
 
         </td>
         <td><a href="{% url 'tests:student-update' test.student.id %}" target="_blank">{{ test.student }}</a></td>
-        <td>{{ test.topic }}</td>
+        <td><a href="{% url 'tests:question-update' test.question.id %}" target="_blank">{{ test.question }}</a></td>
         <td>{{ test.active_from|date:"d.m" }} - {{ test.active_till|date:"d.m" }}</td>
         <td><a href="{% url 'tests:testlogbypin' test.pin_code %}" target="_blank">
         	{% if test.date_passed %}

@@ -19,6 +19,8 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views
+from django.views.generic.base import RedirectView
+
 #router = routers.DefaultRouter()
 #router.register(r'tests', views.TestViewSet)
 #router.register(r'testlogs', views.TestLogViewSet)
@@ -31,6 +33,11 @@ urlpatterns = [
     url(r'^', include('tests.urls', namespace='testsapp')),
     url(r'^login/$', views.login, name='login'), #, kwargs={'next': '/tests/'}),
     url(r'^logout/$', views.logout, name='logout', kwargs={'next_page': '/login/'}),
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
+
+
+# Defaukt route!!!!!!!!!!!!!!!!
+#    url(r'^.*$', RedirectView.as_view(url='/test/', permanent=False))
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #urlpatterns += static('tests/static/media/', document_root=settings.MEDIA_ROOT)

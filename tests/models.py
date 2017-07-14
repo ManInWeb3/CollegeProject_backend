@@ -9,9 +9,14 @@ from ckeditor.fields import RichTextField
 
 
 class Student(models.Model):
-    created_by = models.ForeignKey(User, on_delete=models.PROTECT, default = 1)  
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT, default = 1)
     first_name = models.CharField(max_length = 100)
-    last_name = models.CharField(max_length = 100)
+    last_name  = models.CharField(max_length = 100)
+    student_dob = models.DateField('Students DoB', default='2000-01-01')
+
+    passport_num  = models.CharField(max_length = 20, default=0)
+    passport_scan = models.ImageField(blank=True)
+
     email = models.CharField(max_length = 100)
     skype = models.CharField(max_length = 50)
 
@@ -19,19 +24,20 @@ class Student(models.Model):
         return self.first_name + " " + self.last_name
 
     def get_absolute_url(self):
-        return reverse('tests:student-list', kwargs={})        
+        return reverse('tests:student-list', kwargs={})
 
 class Question(models.Model):
+    question_name = models.CharField(max_length = 50, default='')
     question_text = RichTextField()
     question_type = models.CharField(
                         max_length = 2,
                         choices = (('RD','READING'),('WR','WRITING'),('LS','LISTENING')),
                         default = 'RD',
                     )
-    rec_duration = models.IntegerField(default=1800)
+    rec_duration = models.IntegerField(default = 40)
 
     def __str__(self):
-        return self.question_type+" #"+str(self.id)
+        return self.question_name
     def get_absolute_url(self):
         return reverse('tests:question-list', kwargs={})    
 

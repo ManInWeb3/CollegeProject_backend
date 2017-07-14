@@ -177,17 +177,17 @@ class TestDelete(DeleteView):
 @method_decorator(login_required, name='dispatch')
 class StudentListView(ListView):
     model = Student
-    fields = ['first_name','last_name','email','skype']
+    fields = ['first_name','last_name', 'student_dob','passport_num','passport_scan','email','skype']
 
 @method_decorator(login_required, name='dispatch')
 class StudentUpdate(UpdateView):
     model = Student
-    fields = ['first_name','last_name','email','skype']
+    fields = ['first_name','last_name', 'student_dob','passport_num','passport_scan','email','skype']
 
 @method_decorator(login_required, name='dispatch')
 class StudentCreate(CreateView):
     model = Student
-    fields = ['first_name','last_name','email','skype']
+    fields = ['first_name','last_name', 'student_dob','passport_num','passport_scan','email','skype']
 
 @method_decorator(login_required, name='dispatch')
 class StudentDelete(DeleteView):
@@ -200,17 +200,17 @@ class StudentDelete(DeleteView):
 @method_decorator(login_required, name='dispatch')
 class QuestionListView(ListView):
     model = Question
-    fields = ['question_text','question_type','rec_duration']
+    fields = ['question_name', 'question_text','question_type','rec_duration']
 
 @method_decorator(login_required, name='dispatch')
 class QuestionUpdate(UpdateView):
     model = Question
-    fields = ['question_text','question_type','rec_duration']
+    fields = ['question_name', 'question_text','question_type','rec_duration']
 
 @method_decorator(login_required, name='dispatch')
 class QuestionCreate(CreateView):
     model = Question
-    fields = ['question_text','question_type','rec_duration']
+    fields = ['question_name', 'question_text','question_type','rec_duration']
 
 @method_decorator(login_required, name='dispatch')
 class QuestionDelete(DeleteView):
@@ -220,6 +220,6 @@ class QuestionDelete(DeleteView):
 @method_decorator(login_required, name='dispatch')
 class QuestionDetail(DetailView):
     model = Question
-    fields = ['question_text','question_type']
+    fields = ['question_name', 'question_text','question_type']
 
 

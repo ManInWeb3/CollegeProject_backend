@@ -26,6 +26,7 @@ from .serializers import TestSerializer, TestLogSerializer
 from .models import Student, Test, TestLog, Question
 
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 # ================= API ======================
 
@@ -57,15 +58,6 @@ def apiTestDetailView(request,pin):
         return JsonResponse(serializer.data, safe=False)
 
 
-@csrf_exempt
-def TestLogListView(request):
-    """
-    List TestLog, or create a new one.
-    """
-    if request.method == 'GET':
-        testlogset = TestLog.objects.all()
-        serializer = TestLogSerializer(testlogset, many=True)
-        return JsonResponse(serializer.data, safe=False)
 
 @csrf_exempt
 def TestLogDetailView(request,pk):
@@ -83,7 +75,7 @@ def TestLogDetailView(request,pk):
         return JsonResponse(serializer.data, safe=False)
 
 @csrf_exempt
-def TestLogDetailViewByPIN(request,pin):
+def apiTestLogDetailViewByPIN(request,pin):
     """
     Detail views for TestLog by Test PIN
     only GET by ID and POST are available
@@ -122,10 +114,21 @@ def TestLogDetailViewByPIN(request,pin):
     else:
         return JsonResponse({"status": "error", "message": "Permission to this method is denied"}, status=499)
 
+#@csrf_exempt
+#def TestLogListView(request):
+#    """
+#    List TestLog, or create a new one.
+#    """
+#    if request.method == 'GET':
+#        testlogset = TestLog.objects.all()
+#        serializer = TestLogSerializer(testlogset, many=True)
+#        return JsonResponse(serializer.data, safe=False)
+
+
 # ===================== TestLogs ======================
 #@csrf_exempt
 @login_required
-def TestTimeLineByPIN(request,pin):
+def TestLogDetailByPIN(request,pin):
     """
     TimeLine views for TestLog by Test PIN
     only GET by PIN is available
@@ -138,7 +141,7 @@ def TestTimeLineByPIN(request,pin):
 @method_decorator(login_required, name='dispatch')
 class TestListView(ListView):
     model = Test
-    fields = ['pin_code','topic','active_from','active_till','date_passed', 'student']
+    fields = ['pin_code','question','active_from','active_till','date_passed', 'student']
  
     def get_queryset(self):
         return Test.objects.filter(created_by = self.request.user)
@@ -213,3 +216,10 @@ class QuestionCreate(CreateView):
 class QuestionDelete(DeleteView):
     model = Question
     success_url = reverse_lazy('tests:question-list')
+
+@method_decorator(login_required, name='dispatch')
+class QuestionDetail(DetailView):
+    model = Question
+    fields = ['question_text','question_type']
+
+

@@ -5,26 +5,23 @@
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<h1 class="text-center"> TimeLine of test with PIN {{ test.pin_code }}</h1>
-<b> Test's topic:</b>
-<pre> {{test.topic}}</pre>
+<h1 class="text-center"> TimeLine of test PIN {{ test.pin_code }}</h1>
+<a href="{% url 'tests:question-detail' test.question.id %}" target="_blank">Open question</a>
 
   <table class="table">
   {% for ctestlog in testlog.all %}
-
     <tr>
       <td width="*" rowspan="2">{{ ctestlog.datetime|date:"H:i:s d.m.y" }}</td>
-      <td width="45%"><img src="{{ ctestlog.screenshot }}" alt="Smiley face" width="100%"></td>
-      <td width="45%"><img src="{{ ctestlog.photo }}" alt="Smiley face" width="100%"></td>
+      <td width="45%"><img src="{{ ctestlog.screenshot }}" alt="Screenshot" width="100%"></td>
+      <td width="45%"><img src="{{ ctestlog.photo }}" alt="Student's photo" width="100%"></td>
     </tr>
     <tr>
       <td colspan="2"><textarea style="width:100%;resize:none;" rows="10" readonly>{{ctestlog.text}}</textarea></td>
     </tr>
-
   {% empty %}
     <tr>
       <td>This Test doesn't have any logs.</td>
-    </tr>    
+    </tr>
   {% endfor %}
   </table>
 </div>

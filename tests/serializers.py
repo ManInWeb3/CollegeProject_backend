@@ -27,11 +27,16 @@ class TestSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='first_name'
      )
+    question = serializers.SlugRelatedField(
+        many=False,
+        read_only=True,
+        slug_field='question_text'
+     )
 
     class Meta:
         model = Test
 #        fields = '__all__'
-        fields = ('student', 'topic', 'pin_code', 'duration', 'active_from', 'active_till', 'date_passed')
+        fields = ('student', 'question', 'pin_code', 'duration', 'active_from', 'active_till', 'date_passed')
 
 
 

@@ -176,7 +176,7 @@ class TestDelete(DeleteView):
 @method_decorator(login_required, name='dispatch')
 class TestCheck(UpdateView):
     model = Test
-    fields = ['answer_marked', 'teacher_notes', 'grade']
+    fields = ['answer_marked', 'grade']
     template_name = 'tests/test_check.html'
 
 

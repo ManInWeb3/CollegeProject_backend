@@ -3,6 +3,6 @@ border: 1px solid red;
 }
 
 .answer {
-  height: 50%;
+  height: 70%;
   overflow-y: scroll;
 }

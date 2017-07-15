@@ -4,7 +4,7 @@ from django.views.generic.base import RedirectView
 from . import views
 from tests.views import StudentListView, StudentCreate, StudentUpdate, StudentDelete
 from tests.views import QuestionListView, QuestionCreate, QuestionUpdate, QuestionDelete
-from tests.views import TestListView, TestUpdate, TestCreate, TestDelete
+# from tests.views import TestListView, TestUpdate, TestCreate, TestDelete
 #from tests.views import TestLogDetailByPIN
 
 app_name = 'tests'
@@ -16,10 +16,11 @@ urlpatterns = [
     url(r'^api/v1/testlog/bypin/(?P<pin>[0-9]+)/$', views.apiTestLogDetailViewByPIN, name = 'apitestlogbypin'),
 
 # ===== Objects viewes =====
-    url(r'^test/$', TestListView.as_view(), name='test-list'),
-    url(r'^test/(?P<pk>[0-9]+)/$', TestUpdate.as_view(), name='test-update'),
-    url(r'^test/add/$', TestCreate.as_view(), name='test-add'),
-    url(r'^test/(?P<pk>[0-9]+)/delete/$', TestDelete.as_view(), name='test-delete'),
+    url(r'^test/$', views.TestListView.as_view(), name='test-list'),
+    url(r'^test/(?P<pk>[0-9]+)/$', views.TestUpdate.as_view(), name='test-update'),
+    url(r'^test/add/$', views.TestCreate.as_view(), name='test-add'),
+    url(r'^test/(?P<pk>[0-9]+)/delete/$', views.TestDelete.as_view(), name='test-delete'),
+    url(r'^test/(?P<pk>[0-9]+)/check/$', views.TestCheck.as_view(), name='test-check'),
 
     url(r'^student/$', StudentListView.as_view(), name='student-list'),
     url(r'^student/(?P<pk>[0-9]+)/$', StudentUpdate.as_view(), name='student-update'),

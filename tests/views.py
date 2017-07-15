@@ -57,8 +57,6 @@ def apiTestDetailView(request,pin):
         serializer = TestSerializer(test)
         return JsonResponse(serializer.data, safe=False)
 
-
-
 @csrf_exempt
 def TestLogDetailView(request,pk):
     """
@@ -138,24 +136,26 @@ def TestLogDetailByPIN(request,pin):
 
     return render(request, 'tests/timeline.html', {'test': curtest,'testlog': curtestlog})
 
+
+#============= CRUD Test ==========================
+
 @method_decorator(login_required, name='dispatch')
 class TestListView(ListView):
     model = Test
-    fields = ['pin_code','question','active_from','active_till','date_passed', 'student']
- 
+    fields = ['active_from', 'active_till', 'duration', 'student', 'question']
+
     def get_queryset(self):
         return Test.objects.filter(created_by = self.request.user)
-    
-#============= CRUD Test ==========================
+
 @method_decorator(login_required, name='dispatch')
 class TestUpdate(UpdateView):
     model = Test
-    fields = ['question','active_from','active_till', 'duration', 'student']
+    fields = ['active_from', 'active_till', 'duration', 'student', 'question']
 
 @method_decorator(login_required, name='dispatch')
 class TestCreate(CreateView):
     model = Test
-    fields = ['question','active_from','active_till', 'duration', 'student']
+    fields = ['active_from', 'active_till', 'duration', 'student', 'question']
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -171,6 +171,15 @@ class TestDelete(DeleteView):
     '''
     model = Test
     success_url = reverse_lazy('tests:test-list')
+
+
+@method_decorator(login_required, name='dispatch')
+class TestCheck(UpdateView):
+    model = Test
+    fields = ['answer_marked', 'teacher_notes', 'grade']
+    template_name = 'tests/test_check.html'
+
+
 
 #============== CRUD Student ====================
 

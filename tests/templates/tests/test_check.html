@@ -1,0 +1,25 @@
+{% extends 'tests/base.html' %}
+
+{% block content %}
+
+
+<!-- <div class="col-sm-12"> -->
+
+<div class="col-sm-7 answer">
+	<pre> {{ object.answer_text }} </pre>
+</div>
+
+<div class="col-sm-5 answer">
+	{{ object.question_text|safe }}
+</div>
+
+<div class="col-sm-12 grade">
+	<form action="" method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+	    <input type="submit" value="Save" />
+	</form>
+</div>
+
+
+{% endblock %}

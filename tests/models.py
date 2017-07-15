@@ -57,8 +57,7 @@ class Test(models.Model):
     answer_text   = models.TextField(blank=True,null=True)
     answer_marked = RichTextField(blank=True)
 
-    teacher_notes = RichTextField(blank=True)
-
+#    teacher_notes = RichTextField(blank=True)
     grade = models.DecimalField(max_digits=2, decimal_places=2,default = 0)
     def isactive(self):
         return self.active_from <= timezone.now().date() and timezone.now().date() <= self.active_till and self.date_passed == None

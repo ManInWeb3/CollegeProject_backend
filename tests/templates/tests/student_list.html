@@ -10,6 +10,7 @@
     <thead>
       <tr>
         <th>Student</th>
+        <th>Date of birth</th>
         <th>email</th>
         <th>skype</th>
         <th>student's tests</th>
@@ -22,6 +23,7 @@
         <td>
        		<a href="{% url 'tests:student-update' student.id %}" target="_blank">{{ student }}</a>
         </td>
+        <td>{{ student.student_dob }}</td>
         <td>{{ student.email }}</td>
         <td>{{ student.skype }}</td>
         <td>{{ student.test_set.all|length }}</td>

@@ -1,6 +1,14 @@
 {% extends 'tests/base.html' %}
 
 {% block content %}
+  <script>
+  $( function() {
+    $( "#id_active_from" ).datepicker({ dateFormat: 'yy-mm-dd' });
+  } );
+  $( function() {
+    $( "#id_active_till" ).datepicker({ dateFormat: 'yy-mm-dd' });
+  } );
+  </script>
 <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
 

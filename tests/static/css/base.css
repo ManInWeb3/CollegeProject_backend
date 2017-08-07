@@ -1,8 +1,9 @@
-.col-sm-7 {
-border: 1px solid red;
+.margin10{
+  margin-left: 10px;
+  margin-right: 10px;
 }
-
 .answer {
   height: 70%;
   overflow-y: scroll;
+  /*margin-left: 10px;*/
 }

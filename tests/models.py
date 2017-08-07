@@ -1,12 +1,13 @@
 from django.db import models
 # import hashlib
+import math
 from random import randint
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
 # Create your models here.
-
+import datetime
 
 class Student(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, default = 1)
@@ -26,15 +27,19 @@ class Student(models.Model):
     def get_absolute_url(self):
         return reverse('tests:student-list', kwargs={})
 
+class QuestionType(models.Model):
+    type_name = models.CharField(max_length = 50, default='')
+    type_blank = RichTextField(config_name='default')
+
+    def __str__(self):
+        return self.type_name
+
+
 class Question(models.Model):
     question_name = models.CharField(max_length = 50, default='')
-    question_text = RichTextField()
-    question_type = models.CharField(
-                        max_length = 2,
-                        choices = (('RD','READING'),('WR','WRITING'),('LS','LISTENING')),
-                        default = 'RD',
-                    )
-    rec_duration = models.IntegerField(default = 40)
+    question_text = RichTextField(config_name='default')
+    duration = models.IntegerField(default = 40)
+    question_type = models.ForeignKey( QuestionType, on_delete = models.PROTECT, default =1 )
 
     def __str__(self):
         return self.question_name
@@ -45,7 +50,7 @@ class Test(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, default = 1)
     student = models.ForeignKey(Student, on_delete = models.PROTECT)
     pin_code = models.IntegerField(editable = False,default=0)  #Default 30 min
-    duration = models.IntegerField(default=1800)  #Default 30 min
+    duration = models.IntegerField(default=40)  #Default 30 min
     date_created = models.DateTimeField('date created', auto_now_add=True, editable = False)
     active_from = models.DateField('active from')
     active_till = models.DateField('active till')
@@ -55,31 +60,50 @@ class Test(models.Model):
     question_text = RichTextField(blank=True)
 
     answer_text   = models.TextField(blank=True,null=True)
-    answer_marked = RichTextField(blank=True)
+    answer_marked = RichTextField(blank=True, config_name='marking')
 
 #    teacher_notes = RichTextField(blank=True)
-    grade = models.DecimalField(max_digits=2, decimal_places=2,default = 0)
+    grade = models.DecimalField(max_digits=2, decimal_places=1,default = 0)
+
+    @property
+    def resttime(self):
+# NOW is between date from and date till
+# Check if the duration > first test_log and NOW
+        FirstTL = TestLog.objects.filter(test = self).order_by('datetime').first()
+
+        if FirstTL :
+            FirstTestLogDateTime = FirstTL.datetime
+            TestLogDURATION = timezone.now()-FirstTL.datetime
+            rest_time = self.duration - TestLogDURATION.seconds/60
+            print("Test resttime: "+str(rest_time))
+            return math.ceil(rest_time)
+        else :
+            print("The test doesn't start")
+            return self.duration
+
     def isactive(self):
-        return self.active_from <= timezone.now().date() and timezone.now().date() <= self.active_till and self.date_passed == None
+        return self.active_from <= timezone.now().date() <= self.active_till and 0 <= self.resttime
 
     def iseditable(self):
-        return TestLog.objects.filter(test = self).count()
+        return not bool(TestLog.objects.filter(test = self).count())
 
     def save(self, *args, **kwargs):
+        if self.iseditable() :
+            print("EDIT="+str(self.iseditable()))
+            if( self.pin_code == 0 ):
+                while True:
+                    npin = randint(100000000,999999999)
+                    #Check that the NUMBER is not already used as PIN
+                    try:
+                        curtest = Test.objects.get(pin_code=npin)
+                    except Test.DoesNotExist:
+                        self.pin_code = npin
+                        break
 
-        print("EDIT="+str(self.iseditable()))
-        if( self.pin_code == 0 ):
-            while True:
-                npin = randint(100000000,999999999)
-                #Check that the NUMBER is not already used as PIN
-                try:
-                    curtest = Test.objects.get(pin_code=npin)
-                except Test.DoesNotExist:
-                    self.pin_code = npin
-                    break
-#Need to check if the question was changed
-        self.question_text = self.question.question_text
-
+    #Need to check if the question was changed
+            self.question_text = self.question.question_text
+            self.duration = self.question.duration
+            self.answer_text = self.question.question_type.type_blank
         super(Test, self).save(*args, **kwargs)
 
     def __str__(self):

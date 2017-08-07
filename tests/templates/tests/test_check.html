@@ -3,22 +3,30 @@
 {% block content %}
 
 
-<!-- <div class="col-sm-12"> -->
+<div class="container-fluid margin10">
+  <div class="row">
+  	<div class="col-sm-12 text-center">
+		<a href="{% url 'tests:testlogbypin' test.pin_code %}" target="_blank">Open this test's logs ({{ test.testlog_set.all|length }})</a>
+	</div>
 
-<div class="col-sm-7 answer">
-	<pre> {{ object.answer_text }} </pre>
-</div>
+	<div class="col-sm-7 answer">
+                <h1>Number of words in the answer: ___will_be_here_later___</h1>
+		{{ object.answer_text|safe }}
+	</div>
 
-<div class="col-sm-5 answer">
-	{{ object.question_text|safe }}
-</div>
+	<div class="col-sm-5 answer">
+		{{ object.question_text|safe }}
+	</div>
 
-<div class="col-sm-12 grade">
-	<form action="" method="post">
-		{% csrf_token %}
-		{{ form.as_p }}
-	    <input type="submit" value="Save" />
-	</form>
+	<div class="col-sm-12 grade">
+			<form action="" method="post">
+				{% csrf_token %}
+				{{ form.media }}
+				{{ form.as_p }}
+			    <input type="submit" value="Save" />
+			</form>
+	</div>
+  </div>
 </div>
 
 

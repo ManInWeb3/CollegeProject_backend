@@ -16,7 +16,7 @@
       <td width="45%"><img src="{{ ctestlog.photo }}" alt="Student's photo" width="100%"></td>
     </tr>
     <tr>
-      <td colspan="2"><textarea style="width:100%;resize:none;" rows="10" readonly>{{ctestlog.text}}</textarea></td>
+      <td colspan="2"><div style="width:100%;height:20vh;overflow-y: scroll;" rows="10" readonly>{{ctestlog.text|safe}}</div></td>
     </tr>
   {% empty %}
     <tr>

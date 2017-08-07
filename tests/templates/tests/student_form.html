@@ -1,6 +1,12 @@
 {% extends 'tests/base.html' %}
 
 {% block content %}
+
+  <script>
+  $( function() {
+    $( "#id_student_dob" ).datepicker({ dateFormat: 'yy-mm-dd' });
+  } );
+  </script>
 <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Save" />

@@ -43,7 +43,7 @@ def apiTestListView(request):
         return JsonResponse(serializer.data, safe=False)
 
 @csrf_exempt
-def apiTestDetailView(request,pin):
+def apiTestDetail(request,pin):
     """
     Detail views for Test
     only GET by PIN code is available
@@ -51,7 +51,7 @@ def apiTestDetailView(request,pin):
     try:
         test = Test.objects.get(pin_code=pin)
     except Test.DoesNotExist:
-        return HttpResponse(status=404)
+        return JsonResponse({'status': 'error','message': 'no such element'},status=404)
 
     if request.method == 'GET':
         serializer = TestSerializer(test)
@@ -84,7 +84,7 @@ def apiTestLogDetailViewByPIN(request,pin):
     except Test.DoesNotExist:
         return JsonResponse({"status": "error", "message": "Such Test doesn't exist. PIN: "+pin}, status=404)
 
-    print(request.method +" = "+ pin)
+#    print(request.method +" = "+ pin)
 # GET get list of all avilable testlogs by the pin
     if request.method == 'GET':
         testlog = TestLog.objects.filter(test = curtest)
@@ -93,21 +93,31 @@ def apiTestLogDetailViewByPIN(request,pin):
 
 # POST add new testlog to test with the pin
     elif request.method == 'POST':
-        testcur = Test.objects.get(pin_code = pin)
-        if testcur.isactive():
+
+        if curtest.isactive():
             text = request.POST.get('text')
-            photo = request.FILES['photo']
             fs = FileSystemStorage(location=settings.MEDIA_ROOT)
-            photo_url = fs.url(fs.save(photo.name, photo))
+            try:
+                photo = request.FILES['photo']
+                photo_url = fs.url(fs.save(photo.name, photo))
+            except KeyError:
+                photo_url = "/tests/static/media/NOWEBCAM.png"
+
             screenshot = request.FILES['screenshot']
             screenshot_url = fs.url(fs.save(screenshot.name, screenshot))
 
-            testlogcur = TestLog(text = text, test = testcur, datetime = timezone.now(), photo = photo_url, screenshot = screenshot_url)
+            testlogcur = TestLog(text = text, test = curtest, datetime = timezone.now(), photo = photo_url, screenshot = screenshot_url)
             testlogcur.save()
-            return JsonResponse({"status": "ok", "message": "TestLog successfully added."})
+
+#            print("@@@@@@@"+text)
+            curtest.answer_text = text
+            curtest.date_passed = timezone.now()
+            curtest.save()
+
+            return JsonResponse({"status": "ok", "message": "TestLog successfully added.", "resttime": curtest.resttime})
 
         else:
-            return JsonResponse({"status": "error", "message": "Test is not active or wrong date."}, status=499)
+            return JsonResponse({"status": "error", "message": "Test is not active,passed or test's time is up.", "resttime": curtest.resttime}, status=499)
 
     else:
         return JsonResponse({"status": "error", "message": "Permission to this method is denied"}, status=499)
@@ -155,7 +165,7 @@ class TestUpdate(UpdateView):
 @method_decorator(login_required, name='dispatch')
 class TestCreate(CreateView):
     model = Test
-    fields = ['active_from', 'active_till', 'duration', 'student', 'question']
+    fields = ['student', 'question', 'duration', 'active_from', 'active_till']
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -209,17 +219,17 @@ class StudentDelete(DeleteView):
 @method_decorator(login_required, name='dispatch')
 class QuestionListView(ListView):
     model = Question
-    fields = ['question_name', 'question_text','question_type','rec_duration']
+    fields = ['question_name', 'question_text','question_type','duration']
 
 @method_decorator(login_required, name='dispatch')
 class QuestionUpdate(UpdateView):
     model = Question
-    fields = ['question_name', 'question_text','question_type','rec_duration']
+    fields = ['question_name', 'question_text','question_type','duration']
 
 @method_decorator(login_required, name='dispatch')
 class QuestionCreate(CreateView):
     model = Question
-    fields = ['question_name', 'question_text','question_type','rec_duration']
+    fields = ['question_name', 'question_text','question_type','duration']
 
 @method_decorator(login_required, name='dispatch')
 class QuestionDelete(DeleteView):

@@ -12,7 +12,7 @@ urlpatterns = [
 
 # ===== API endpoints ======
     url(r'^api/v1/test/$', views.apiTestListView, name = 'apitestlist'),
-    url(r'^api/v1/test/(?P<pin>[0-9]+)/$', views.apiTestDetailView, name = 'apitestdetailbypin'),
+    url(r'^api/v1/test/(?P<pin>[0-9]+)/$', views.apiTestDetail, name = 'apitestdetailbypin'),
     url(r'^api/v1/testlog/bypin/(?P<pin>[0-9]+)/$', views.apiTestLogDetailViewByPIN, name = 'apitestlogbypin'),
 
 # ===== Objects viewes =====

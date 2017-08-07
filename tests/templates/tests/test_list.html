@@ -7,11 +7,13 @@
   <table class="table">
     <thead>
       <tr>
-        <th>Test PIN</th>
         <th>Student</th>
+        <th>Student DoB</th>
+        <th>Test PIN</th>
         <th>Test question</th>
         <th>Active dates</th>
         <th>Passed date</th>
+        <th>Grade</th>
         <th></th>
       </tr>
     </thead>
@@ -19,6 +21,8 @@
 
 {% for test in object_list %}
       <tr>
+        <td><a href="{% url 'tests:student-update' test.student.id %}" target="_blank">{{ test.student }}</a></td>
+        <td>{{ test.student.student_dob|date:"d.m.y" }}</td>
         <td>
         	{% if test.testlog_set.all|length == 0 %}	
         		<a href="{% url 'tests:test-update' test.id %}" target="_blank">{{ test.pin_code }}</a>
@@ -27,16 +31,20 @@
         	{% endif%}
 
         </td>
-        <td><a href="{% url 'tests:student-update' test.student.id %}" target="_blank">{{ test.student }}</a></td>
-        <td><a href="{% url 'tests:question-update' test.question.id %}" target="_blank">{{ test.question }}</a></td>
+        <td>{{ test.question }}</td>
         <td>{{ test.active_from|date:"d.m" }} - {{ test.active_till|date:"d.m" }}</td>
-        <td><a href="{% url 'tests:testlogbypin' test.pin_code %}" target="_blank">
+        <td><a href="{% url 'tests:test-check' test.id %}" target="_blank">
         	{% if test.date_passed %}
         		{{ test.date_passed|date:"d.m.y" }}
+                	({{ test.testlog_set.all|length }})</a>
         	{% else %}
         		Not passed
         	{% endif %}
-        	({{ test.testlog_set.all|length }})</a>
+        </td>
+        <td>
+        	{% if test.grade %}
+        		{{ test.grade }}
+        	{% endif %}
         </td>
         <td>{% if test.testlog_set.all|length == 0 %}	
         		<a href="{% url 'tests:test-delete' test.id %}" class="glyphicon glyphicon-remove" style="color:red" title="{{ test.testlog_set.all|length }} test logs"></a>

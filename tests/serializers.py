@@ -36,7 +36,7 @@ class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Test
 #        fields = '__all__'
-        fields = ('student', 'question', 'pin_code', 'duration', 'active_from', 'active_till', 'date_passed')
+        fields = ('student', 'question', 'pin_code', 'duration', 'active_from', 'active_till', 'date_passed', 'resttime', 'answer_text')
 
 
 

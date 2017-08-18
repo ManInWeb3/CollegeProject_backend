@@ -1,0 +1,43 @@
+{% extends 'tests/base.html' %}
+
+{% block content %}
+
+
+<a href="./add" class="btn btn-primary" role="button">Add an attachment</a>
+
+<div class="container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Filename</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+{% for item in object_list %}
+      <tr>
+        <td>
+            <a href="{% url 'tests:attachment-update' item.id %}" target="_blank">{{ item }}</a>
+        </td>
+        <td>{{ item.name }}</td>
+        <td>{% if  item.question_set.all|length == 0 %}
+        <a href="{% url 'tests:attachment-delete' item.id %}" class="glyphicon glyphicon-remove" style="color:red"></a>
+            {% else %}
+        <a class="glyphicon glyphicon-remove" style="color:grey" title="Cannot be removed (used by {{ item.question_set.all|length }} questions)"></a>
+        {% endif %}
+
+</td>
+      </tr>      
+
+{% empty %}
+<tr>
+    <td colspan="4">No attachments yet.</td>
+</tr>    
+{% endfor %}
+    </tbody>
+
+  </table>
+</div>
+
+
+{% endblock %}

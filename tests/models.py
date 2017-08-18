@@ -9,17 +9,23 @@ from ckeditor.fields import RichTextField
 # Create your models here.
 import datetime
 
+#import random
+#import string
+
+import uuid
+import os
+
 class Student(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, default = 1)
     first_name = models.CharField(max_length = 100)
     last_name  = models.CharField(max_length = 100)
-    student_dob = models.DateField('Students DoB', default='2000-01-01')
+    student_dob = models.DateField('Students DoB', default='2000-01-01', blank=True)
 
-    passport_num  = models.CharField(max_length = 20, default=0)
+    passport_num  = models.CharField(max_length = 20, default=0, blank=True)
     passport_scan = models.ImageField(blank=True)
 
-    email = models.CharField(max_length = 100)
-    skype = models.CharField(max_length = 50)
+    email = models.CharField(max_length = 100, blank=True)
+    skype = models.CharField(max_length = 50, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.last_name
@@ -34,17 +40,40 @@ class QuestionType(models.Model):
     def __str__(self):
         return self.type_name
 
+def upload_attachments(instance, filename):
+    now = timezone.now()
+    filename_base, filename_ext = os.path.splitext(filename)
+    return 'attachments/{}_{}{}'.format(
+        now.strftime("%Y/%m/%d/%Y%m%d%H%M%S"),
+        str(uuid.uuid4())[:7],
+        filename_ext.lower()
+    )
+
+class Attachment(models.Model):
+    name = models.CharField(max_length=100)
+    path = models.FileField(upload_to=upload_attachments)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('name',)
+
+    def get_absolute_url(self):
+        return reverse('tests:attachment-list', kwargs={})    
 
 class Question(models.Model):
     question_name = models.CharField(max_length = 50, default='')
     question_text = RichTextField(config_name='default')
     duration = models.IntegerField(default = 40)
     question_type = models.ForeignKey( QuestionType, on_delete = models.PROTECT, default =1 )
+    attachments = models.ManyToManyField( Attachment, blank = True)
 
     def __str__(self):
         return self.question_name
     def get_absolute_url(self):
         return reverse('tests:question-list', kwargs={})    
+
 
 class Test(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, default = 1)
@@ -65,6 +94,15 @@ class Test(models.Model):
 #    teacher_notes = RichTextField(blank=True)
     grade = models.DecimalField(max_digits=2, decimal_places=1,default = 0)
 
+#    @property
+    def get_attachments(self):
+#        return self.question.attachment
+        return Attachment.objects.filter(question = self.question)
+
+    @property
+    def question_type(self):
+        return self.question.question_type.__str__
+
     @property
     def resttime(self):
 # NOW is between date from and date till
@@ -82,7 +120,8 @@ class Test(models.Model):
             return self.duration
 
     def isactive(self):
-        return self.active_from <= timezone.now().date() <= self.active_till and 0 <= self.resttime
+        print(self.date_passed)
+        return self.active_from <= timezone.now().date() <= self.active_till and 0 <= self.resttime and self.date_passed is None
 
     def iseditable(self):
         return not bool(TestLog.objects.filter(test = self).count())
@@ -111,12 +150,16 @@ class Test(models.Model):
     def get_absolute_url(self):
         return reverse('tests:test-list', kwargs={})
 
+def get_testlogs_path(instance, filename):
+    return os.path.join( 'media', str(instance.test.pin_code), filename)
+
 class TestLog(models.Model):
     test    = models.ForeignKey(Test, on_delete = models.PROTECT, editable = False)
     datetime= models.DateTimeField(auto_now_add=True, blank=True, editable = False)
+    info    = models.CharField(max_length = 50, default='', blank=True, editable = False)
     text    = models.TextField(blank=True,null=True)
-    screenshot = models.ImageField(editable = False,blank=True, null=True)
-    photo   = models.ImageField(editable = False)
+    screenshot = models.ImageField(upload_to=get_testlogs_path, editable = False,blank=True, null=True)
+    photo   = models.ImageField( upload_to=get_testlogs_path, editable = False)
 
 
 

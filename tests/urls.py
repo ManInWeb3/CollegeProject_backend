@@ -33,6 +33,12 @@ urlpatterns = [
     url(r'^question/add/$', QuestionCreate.as_view(), name='question-add'),
     url(r'^question/(?P<pk>[0-9]+)/delete/$', QuestionDelete.as_view(), name='question-delete'),
 
+    url(r'^attachment/$', views.AttachmentListView.as_view(), name='attachment-list'),
+    url(r'^attachment/(?P<pk>[0-9]+)/$', views.AttachmentUpdate.as_view(), name='attachment-update'),
+    url(r'^attachment/view/(?P<pk>[0-9]+)/$', views.AttachmentDetail.as_view(), name='attachment-detail'),
+    url(r'^attachment/add/$', views.AttachmentCreate.as_view(), name='attachment-add'),
+    url(r'^attachment/(?P<pk>[0-9]+)/delete/$', views.AttachmentDelete.as_view(), name='attachment-delete'),
+
 #    url(r'^testlog/$', views.TestLogListView),
 #    url(r'^testlog/(?P<pk>[0-9]+)/$', views.TestLogDetailView),
 #    url(r'^testlog/bypin/(?P<pin>[0-9]+)/$', views.TestTimeLineByPIN, name = 'testlogbypin'),

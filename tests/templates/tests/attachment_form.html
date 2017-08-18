@@ -1,0 +1,17 @@
+{% extends 'tests/base.html' %}
+
+{% block content %}
+<script>
+$(document).ready(function(){
+    $("#id_path").attr("accept",".mp3");
+});
+</script>
+
+<div class="alert alert-warning">
+  <strong>Warning!</strong> Only mp3 files are allowed.
+</div>
+<form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save" />
+</form>
+{% endblock %}

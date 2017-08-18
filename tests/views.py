@@ -23,11 +23,12 @@ from django.views import generic
 from django.urls import reverse_lazy
 
 from .serializers import TestSerializer, TestLogSerializer
-from .models import Student, Test, TestLog, Question
+from .models import Student, Test, TestLog, Question, Attachment
 
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+
 # ================= API ======================
 
 @csrf_exempt
@@ -49,13 +50,19 @@ def apiTestDetail(request,pin):
     only GET by PIN code is available
     """
     try:
-        test = Test.objects.get(pin_code=pin)
+        curtest = Test.objects.get(pin_code=pin)
     except Test.DoesNotExist:
         return JsonResponse({'status': 'error','message': 'no such element'},status=404)
 
     if request.method == 'GET':
-        serializer = TestSerializer(test)
-        return JsonResponse(serializer.data, safe=False)
+        serializer = TestSerializer(curtest)
+        if curtest.isactive():
+            return JsonResponse(serializer.data, safe=False)
+        else:
+            if curtest.date_passed is None:
+                return JsonResponse({"status": "error", "message": "Test is yet/already not active or test's time is up.",}, status=499)
+            else:
+                return JsonResponse({"status": "error", "message": "Test is already passed.",}, status=499)
 
 @csrf_exempt
 def TestLogDetailView(request,pk):
@@ -94,9 +101,11 @@ def apiTestLogDetailViewByPIN(request,pin):
 # POST add new testlog to test with the pin
     elif request.method == 'POST':
 
+        print("POST:")
         if curtest.isactive():
             text = request.POST.get('text')
-            fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+            info = request.POST.get('info')
+            fs = FileSystemStorage(location=settings.MEDIA_ROOT+"/"+str(curtest.pin_code)+"/", base_url = settings.MEDIA_URL+"/"+str(curtest.pin_code)+"/")
             try:
                 photo = request.FILES['photo']
                 photo_url = fs.url(fs.save(photo.name, photo))
@@ -105,13 +114,16 @@ def apiTestLogDetailViewByPIN(request,pin):
 
             screenshot = request.FILES['screenshot']
             screenshot_url = fs.url(fs.save(screenshot.name, screenshot))
+            print(screenshot_url)
 
-            testlogcur = TestLog(text = text, test = curtest, datetime = timezone.now(), photo = photo_url, screenshot = screenshot_url)
+            testlogcur = TestLog(text = text, info = info, test = curtest, datetime = timezone.now(), photo = photo_url, screenshot = screenshot_url)
             testlogcur.save()
 
-#            print("@@@@@@@"+text)
+#            print("@@@@@@@"+info)
+            if info == 'FINISH_TEST':
+                curtest.date_passed = timezone.now()
             curtest.answer_text = text
-            curtest.date_passed = timezone.now()
+            curtest.answer_marked = text
             curtest.save()
 
             return JsonResponse({"status": "ok", "message": "TestLog successfully added.", "resttime": curtest.resttime})
@@ -224,12 +236,12 @@ class QuestionListView(ListView):
 @method_decorator(login_required, name='dispatch')
 class QuestionUpdate(UpdateView):
     model = Question
-    fields = ['question_name', 'question_text','question_type','duration']
+    fields = ['question_name', 'question_text','question_type','duration','attachments']
 
 @method_decorator(login_required, name='dispatch')
 class QuestionCreate(CreateView):
     model = Question
-    fields = ['question_name', 'question_text','question_type','duration']
+    fields = ['question_name', 'question_text','question_type','duration','attachments']
 
 @method_decorator(login_required, name='dispatch')
 class QuestionDelete(DeleteView):
@@ -239,6 +251,33 @@ class QuestionDelete(DeleteView):
 @method_decorator(login_required, name='dispatch')
 class QuestionDetail(DetailView):
     model = Question
-    fields = ['question_name', 'question_text','question_type']
+    fields = ['question_name', 'question_text','question_type','attachments']
 
+
+#============= CRUD Attachment ==========================
+
+@method_decorator(login_required, name='dispatch')
+class AttachmentListView(ListView):
+    model = Attachment
+    fields = ['name', 'path']
+
+@method_decorator(login_required, name='dispatch')
+class AttachmentUpdate(UpdateView):
+    model = Attachment
+    fields = ['name', 'path']
+
+@method_decorator(login_required, name='dispatch')
+class AttachmentCreate(CreateView):
+    model = Attachment
+    fields = ['name', 'path']
+
+@method_decorator(login_required, name='dispatch')
+class AttachmentDelete(DeleteView):
+    model = Attachment
+    success_url = reverse_lazy('tests:attachment-list')
+
+@method_decorator(login_required, name='dispatch')
+class AttachmentDetail(DetailView):
+    model = Attachment
+    fields = ['name', 'path']
 

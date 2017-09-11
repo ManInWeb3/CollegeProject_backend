@@ -17,7 +17,7 @@
 {% for item in object_list %}
       <tr>
         <td>
-            <a href="{% url 'tests:attachment-update' item.id %}" target="_blank">{{ item }}</a>
+            <a href="{% url 'tests:attachment-update' item.id %}">{{ item }}</a>
         </td>
         <td>{{ item.name }}</td>
         <td>{% if  item.question_set.all|length == 0 %}

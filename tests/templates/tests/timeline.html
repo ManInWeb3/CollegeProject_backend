@@ -6,7 +6,7 @@
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 <h1 class="text-center"> TimeLine of test PIN {{ test.pin_code }}</h1>
-<a href="{% url 'tests:question-detail' test.question.id %}" target="_blank">Open question</a>
+<a href="{% url 'tests:question-detail' test.question.id %}">Open question</a>
 
   <table class="table">
   {% for ctestlog in testlog.all %}

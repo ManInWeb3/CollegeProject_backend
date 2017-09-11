@@ -3,7 +3,12 @@
   margin-right: 10px;
 }
 .answer {
-  height: 70%;
+  height: 85%;
+/*  overflow-y: scroll;*/
+  /*margin-left: 10px;*/
+}
+.question {
+  height: 85%;
   overflow-y: scroll;
   /*margin-left: 10px;*/
 }

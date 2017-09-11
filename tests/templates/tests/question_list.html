@@ -20,7 +20,7 @@
 {% for question in object_list %}
       <tr>
         <td>
-       		<a href="{% url 'tests:question-update' question.id %}" target="_blank">{{ question }}</a>
+       		<a href="{% url 'tests:question-update' question.id %}">{{ question }}</a>
         </td>
         <td>{{ question.question_type }}</td>
         <td>{{ question.rec_duration }}</td>

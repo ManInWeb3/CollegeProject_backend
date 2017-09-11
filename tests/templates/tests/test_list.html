@@ -21,11 +21,11 @@
 
 {% for test in object_list %}
       <tr>
-        <td><a href="{% url 'tests:student-update' test.student.id %}" target="_blank">{{ test.student }}</a></td>
+        <td><a href="{% url 'tests:student-update' test.student.id %}">{{ test.student }}</a></td>
         <td>{{ test.student.student_dob|date:"d.m.y" }}</td>
         <td>
         	{% if test.testlog_set.all|length == 0 %}	
-        		<a href="{% url 'tests:test-update' test.id %}" target="_blank">{{ test.pin_code }}</a>
+        		<a href="{% url 'tests:test-update' test.id %}">{{ test.pin_code }}</a>
         	{% else %}
         		{{ test.pin_code }}
         	{% endif%}
@@ -33,7 +33,7 @@
         </td>
         <td>{{ test.question }}</td>
         <td>{{ test.active_from|date:"d.m" }} - {{ test.active_till|date:"d.m" }}</td>
-        <td><a href="{% url 'tests:test-check' test.id %}" target="_blank">
+        <td><a href="{% url 'tests:test-check' test.id %}">
         	{% if test.date_passed %}
         		{{ test.date_passed|date:"d.m.y" }}
                 	({{ test.testlog_set.all|length }})</a>
